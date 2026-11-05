@@ -1,8 +1,14 @@
 # Forecasting Depression in Bipolar Disorder Using a Convolutional Neural Network
 
-A 1-D Convolutional Neural Network (CNN) that detects depressive episodes in
-unipolar and bipolar patients from **one day of wrist-worn motor-activity
-(actigraphy) data**. The CNN is written **from scratch in NumPy**: no deep-learning
+This project has two parts:
+
+1. **Part 1 – Depresjon (55 people):** a 1-D Convolutional Neural Network (CNN) that detects
+   depressive episodes in unipolar and bipolar patients from **one day of wrist-worn
+   motor-activity (actigraphy) data**.
+2. **Part 2 – Bip4cast bipolar patients:** a multichannel CNN that uses 14 days of a bipolar
+   patient's **daily self-report questionnaire** to detect, and try to *forecast* 7 days ahead,
+   depressive episodes. It also checks the self-reports against the clinician-rated
+   **YMRS** (mania) and **HDRS** (depression) scales. Both CNNs are written **from scratch in NumPy**: no deep-learning
 framework is used. That way every algorithm in the pipeline is visible and explained,
 and its gradients are verified numerically.
 
@@ -12,7 +18,7 @@ plus Random Forest), all under the same patient-independent evaluation.
 
 ![Model comparison](results/figures/model_comparison.png)
 
-## Key results
+## Part 1 – Key results
 
 Evaluation: 5-fold cross-validation **grouped by participant**, so the model is always
 tested on people it has never seen, repeated 5 times with different splits
@@ -48,7 +54,57 @@ Depressed patients move clearly less during the day and have a flatter daily rhy
 than healthy controls. Bipolar patients are also more active at night. This is the
 pattern the CNN picks up.
 
-## Dataset
+## Part 2 – Forecasting depressive episodes in bipolar patients
+
+**Data:** anonymised records of bipolar patients treated at Clínica Nuestra Señora de la Paz,
+Madrid (Bip4cast project), published by Junestrand (2018). It includes:
+* daily questionnaires: mood, motivation, attention, irritability, anxiety, sleep, cigarettes,
+  caffeine, wake-up and bed times
+* clinician ratings on the **YMRS** (Young Mania Rating Scale, 11 items) and the
+  **HDRS-17** (Hamilton Depression Rating Scale)
+* the dates of every depressive and manic episode
+
+Three patients (D, G and M) have labelled episodes. Patient O had constantly mixed episodes and
+was excluded, as the psychiatrist recommended. That leaves 582–596 sliding 14-day windows, about
+92 of which are followed by a depressive episode.
+
+**Model:** `DiaryCNN` is a multichannel 1-D CNN: 11 questionnaire items × 14 days → Conv(k=3) →
+MaxPool → Conv(k=3) → Global Average Pooling → Dense. It is an average of 5 networks trained
+from different starting points.
+
+**Evaluation:**
+* *Known patients, unseen weeks:* blocked time-series cross-validation, with a 21-day buffer
+  around each test block.
+* *New patient:* leave-one-patient-out.
+
+![Patient timelines](results/figures/forecasting_patient_timelines.png)
+
+| ROC AUC (0.5 = chance) | Detect episode today, known patients | Detect today, new patient | Forecast 7 days ahead, known patients | Forecast 7 days, new patient |
+|---|---|---|---|---|
+| **DiaryCNN (ours)** | **0.66** | **0.65** | 0.49 | 0.33 |
+| Logistic Regression | 0.49 | 0.54 | 0.41 | 0.27 |
+| Random Forest | 0.46 | 0.53 | 0.37 | 0.39 |
+| Mood rule (low mood in last 7 days, no training) | 0.61 | 0.61 | 0.54 | 0.54 |
+
+![Forecasting comparison](results/figures/forecasting_model_comparison.png)
+
+**What this shows:**
+* **Self-reports match the clinicians.** A patient's average self-reported mood over the 7 days
+  before an appointment correlates with their **HDRS depression score (Spearman ρ = −0.54,
+  p = 0.0003, n = 41)** and, more weakly, with their **YMRS score (ρ = −0.38, p = 0.018, n = 39)**.
+  Daily questionnaires are therefore a valid way to monitor mood between appointments.
+* **Detecting a current depressive episode works moderately.** The CNN is the best model
+  (AUC 0.65–0.66), and it also works for a patient it has never seen.
+* **Forecasting 7 days ahead does not work with this data.** No model beats chance. The CNN's
+  "forecasts" rise only once an episode has already started (see below), so it recognises
+  depression but cannot anticipate it. With only 3 patients and 4 depressive episodes (29
+  "new-episode" windows), there are too few examples of what the run-up to an episode looks like.
+  We also tried standardising each patient against their own baseline; it did not help.
+
+![CNN forecast timeline](results/figures/forecasting_cnn_timeline.png)
+![Scales vs self-report](results/figures/forecasting_scales_vs_mood.png)
+
+## Dataset (Part 1)
 
 **Depresjon** (Garcia-Ceja et al., 2018). Actiwatch motor-activity counts were recorded
 every minute for 23 depressed patients (15 unipolar, 7 bipolar II, 1 bipolar I) and
@@ -94,41 +150,50 @@ pip install -r requirements.txt
 python tests/test_cnn.py           # gradient check (a few seconds)
 python run_experiments.py          # all experiments + figures (~6 min on a laptop CPU)
 python run_experiments.py --quick  # fast smoke test (~1 min)
+python run_forecasting.py          # Part 2: bipolar forecasting (~3 min)
 
 python predict.py data/condition/condition_5.csv   # score one recording
 ```
 
-Outputs go to `results/`: `metrics.json`, `detection_metrics.csv`, `figures/*.png`,
-and the trained weights in `cnn_weights.npz`.
+Outputs go to `results/`: `metrics.json`, `detection_metrics.csv`, `forecasting_metrics.json`,
+`figures/*.png`, and the trained Part 1 weights in `cnn_weights.npz`.
 
 ## Repository structure
 
 ```
 ├── data/                    Depresjon dataset (condition/, control/, scores.csv)
+│   └── bdcp/                Bip4cast bipolar patients (episodes, diary, YMRS, HDRS)
 ├── src/depresjon_cnn/
-│   ├── data.py              loading, daily windows, preprocessing
-│   ├── features.py          hand-crafted features for the baselines
-│   └── cnn.py               NumPy 1-D CNN (layers, Adam, training loop)
+│   ├── data.py              Part 1: loading, daily windows, preprocessing
+│   ├── features.py          Part 1: hand-crafted features for the baselines
+│   ├── bipolar_data.py      Part 2: cleaning the bipolar records, 14-day windows
+│   └── cnn.py               NumPy CNNs (ActivityCNN, DiaryCNN), layers, Adam
 ├── tests/test_cnn.py        numerical gradient check
-├── run_experiments.py       detection, early-detection and severity experiments
+├── run_experiments.py       Part 1: detection, early-detection and severity experiments
+├── run_forecasting.py       Part 2: detection / 7-day forecasting, YMRS & HDRS analysis
 ├── predict.py               apply the trained model to a new recording
 └── results/                 metrics and figures (generated)
 ```
 
 ## Limitations and future work
 
-* **Small sample:** 55 people, and only 8 of them bipolar. The results are a proof of concept.
-  Confidence intervals are wide, and the bipolar result rests on 108 days from 8 patients.
-* **Detection, not long-range forecasting:** the model recognises a current depressive state.
-  Forecasting future episodes would need longitudinal data with repeated mood ratings,
-  such as the YMRS/HDRS and interview records described in the proposal.
+* **Small samples:** Part 1 has 55 people, only 8 of them bipolar; Part 2 has just 3 bipolar
+  patients. Both are proofs of concept with wide uncertainty.
+* **Forecasting needs more patients:** Part 2 shows that self-reports track depression, but
+  anticipating an episode a week in advance would need many more patients and episodes. Combining
+  passive sensing (Part 1) with daily self-reports (Part 2) for the same people is the natural
+  next step.
 * **Severity:** MADRS could not be predicted from activity alone. Combining activity with
   self-reported mood, sleep times and clinical scales is the natural next step.
 * Not a medical device. Do not use it for diagnosis.
 
 ## Citation
 
-If you use the dataset, cite:
+Part 2 data and dataset description: A. Junestrand Leal, *Application of Machine Learning
+Algorithms for Bipolar Disorder Crisis Prediction*, Bachelor's thesis, Universidad Complutense de
+Madrid, 2018. Data: https://github.com/AxelJunes/BDCP (Apache-2.0), Bip4cast project.
+
+If you use the Depresjon dataset, cite:
 
 > E. Garcia-Ceja, M. Riegler, P. Jakobsen, J. Tørresen, T. Nordgreen, K. J. Oedegaard,
 > O. B. Fasmer. *Depresjon: A Motor Activity Database of Depression Episodes in Unipolar
@@ -137,4 +202,5 @@ If you use the dataset, cite:
 
 ## License
 
-Code: MIT (see `LICENSE`). Data: Depresjon terms (research and education only), see `data/README.md`.
+Code: MIT (see `LICENSE`). Data: Depresjon terms (research and education only), see `data/README.md`; Bip4cast/BDCP data under
+Apache-2.0, see `data/bdcp/README.md`.

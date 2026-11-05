@@ -1,0 +1,233 @@
+{
+  "data": {
+    "horizon_0d": {
+      "windows": 596,
+      "depressive_windows": 91
+    },
+    "horizon_7d": {
+      "windows": 582,
+      "depressive_windows": 92
+    }
+  },
+  "results": {
+    "horizon_0d": {
+      "known_patients_blocked_cv": {
+        "CNN": {
+          "auc": 0.6590795343270591,
+          "balanced_accuracy": 0.6319660537482319,
+          "recall_depression": 0.2857142857142857,
+          "auc_new_episodes_only": null,
+          "per_patient_auc": {
+            "D": 0.7812082330927559,
+            "G": 0.9425438596491228,
+            "M": 0.4051125782969358
+          }
+        },
+        "Logistic Regression": {
+          "auc": 0.4852790773582853,
+          "balanced_accuracy": 0.5421172886519421,
+          "recall_depression": 0.23076923076923078,
+          "auc_new_episodes_only": null,
+          "per_patient_auc": {
+            "D": 0.4967923015236567,
+            "G": 0.9377192982456141,
+            "M": 0.1772473336719147
+          }
+        },
+        "Random Forest": {
+          "auc": 0.46003699271026005,
+          "balanced_accuracy": 0.48316831683168315,
+          "recall_depression": 0.0,
+          "auc_new_episodes_only": null,
+          "per_patient_auc": {
+            "D": 0.4516172146484897,
+            "G": 0.27938596491228074,
+            "M": 0.516167259184019
+          }
+        },
+        "Mood rule (no training)": {
+          "auc": 0.6084321618975084,
+          "balanced_accuracy": 0.5904798172124905,
+          "recall_depression": 0.3076923076923077,
+          "auc_new_episodes_only": null,
+          "per_patient_auc": {
+            "D": 0.834669874365143,
+            "G": 0.5541666666666667,
+            "M": 0.4941594718131031
+          }
+        }
+      },
+      "new_patient_leave_one_out": {
+        "CNN": {
+          "auc": 0.6451311065172451,
+          "balanced_accuracy": 0.6543248830377544,
+          "recall_depression": 0.6373626373626373,
+          "auc_new_episodes_only": null,
+          "per_patient_auc": {
+            "D": 0.8680834001603849,
+            "G": 0.9241228070175439,
+            "M": 0.4613170814288133
+          }
+        },
+        "Logistic Regression": {
+          "auc": 0.5353933195517353,
+          "balanced_accuracy": 0.5052225002720052,
+          "recall_depression": 0.5054945054945055,
+          "auc_new_episodes_only": null,
+          "per_patient_auc": {
+            "D": 0.48703555199144616,
+            "G": 0.9219298245614035,
+            "M": 0.39512442864398173
+          }
+        },
+        "Random Forest": {
+          "auc": 0.5285170275269284,
+          "balanced_accuracy": 0.5003155260581003,
+          "recall_depression": 0.6263736263736264,
+          "auc_new_episodes_only": null,
+          "per_patient_auc": {
+            "D": 0.644480085538626,
+            "G": 0.17807017543859652,
+            "M": 0.7220247164381243
+          }
+        },
+        "Mood rule (no training)": {
+          "auc": 0.6084321618975084,
+          "balanced_accuracy": 0.5904798172124905,
+          "recall_depression": 0.3076923076923077,
+          "auc_new_episodes_only": null,
+          "per_patient_auc": {
+            "D": 0.834669874365143,
+            "G": 0.5541666666666667,
+            "M": 0.4941594718131031
+          }
+        }
+      }
+    },
+    "horizon_7d": {
+      "known_patients_blocked_cv": {
+        "CNN": {
+          "auc": 0.4949201419698314,
+          "balanced_accuracy": 0.5427684117125111,
+          "recall_depression": 0.13043478260869565,
+          "auc_new_episodes_only": 0.42663084042394395,
+          "per_patient_auc": {
+            "D": 0.35100000000000003,
+            "G": 0.9078762306610407,
+            "M": 0.6106412966878083
+          }
+        },
+        "Logistic Regression": {
+          "auc": 0.40652173913043477,
+          "balanced_accuracy": 0.545053238686779,
+          "recall_depression": 0.2717391304347826,
+          "auc_new_episodes_only": 0.2860128377369757,
+          "per_patient_auc": {
+            "D": 0.290625,
+            "G": 0.9177215189873418,
+            "M": 0.427061310782241
+          }
+        },
+        "Random Forest": {
+          "auc": 0.37400177462289264,
+          "balanced_accuracy": 0.4945430346051464,
+          "recall_depression": 0.021739130434782608,
+          "auc_new_episodes_only": 0.4067771309150619,
+          "per_patient_auc": {
+            "D": 0.217375,
+            "G": 0.279887482419128,
+            "M": 0.5896758280479211
+          }
+        },
+        "Mood rule (no training)": {
+          "auc": 0.5444432120674357,
+          "balanced_accuracy": 0.5739574090505768,
+          "recall_depression": 0.2826086956521739,
+          "auc_new_episodes_only": 0.31221077772801914,
+          "per_patient_auc": {
+            "D": 0.767625,
+            "G": 0.47819971870604777,
+            "M": 0.4031007751937985
+          }
+        }
+      },
+      "new_patient_leave_one_out": {
+        "CNN": {
+          "auc": 0.33163265306122447,
+          "balanced_accuracy": 0.4029946761313221,
+          "recall_depression": 0.09782608695652174,
+          "auc_new_episodes_only": 0.2698910285117182,
+          "per_patient_auc": {
+            "D": 0.067375,
+            "G": 0.7841068917018283,
+            "M": 0.5884425651867513
+          }
+        },
+        "Logistic Regression": {
+          "auc": 0.2681455190771961,
+          "balanced_accuracy": 0.4529946761313221,
+          "recall_depression": 0.09782608695652174,
+          "auc_new_episodes_only": 0.19189431258396775,
+          "per_patient_auc": {
+            "D": 0.06025,
+            "G": 0.8481012658227849,
+            "M": 0.41067653276955607
+          }
+        },
+        "Random Forest": {
+          "auc": 0.3930346051464064,
+          "balanced_accuracy": 0.3876885536823425,
+          "recall_depression": 0.09782608695652174,
+          "auc_new_episodes_only": 0.3568443051201672,
+          "per_patient_auc": {
+            "D": 0.36675,
+            "G": 0.1729957805907173,
+            "M": 0.5197322057787174
+          }
+        },
+        "Mood rule (no training)": {
+          "auc": 0.5444432120674357,
+          "balanced_accuracy": 0.5739574090505768,
+          "recall_depression": 0.2826086956521739,
+          "auc_new_episodes_only": 0.31221077772801914,
+          "per_patient_auc": {
+            "D": 0.767625,
+            "G": 0.47819971870604777,
+            "M": 0.4031007751937985
+          }
+        }
+      }
+    }
+  },
+  "window_days": 14,
+  "patients": [
+    "D",
+    "G",
+    "M"
+  ],
+  "features": [
+    "mood",
+    "motivation",
+    "attention_problems",
+    "irritability",
+    "anxiety",
+    "sleep_problems",
+    "cigarettes",
+    "caffeine_mg",
+    "wake_hour",
+    "bed_hour",
+    "sleep_hours"
+  ],
+  "clinician_scales_vs_self_report": {
+    "HDRS": {
+      "n_ratings": 41,
+      "spearman_rho_vs_7day_mood": -0.5357436647896927,
+      "p_value": 0.00030645042924387167
+    },
+    "YMRS": {
+      "n_ratings": 39,
+      "spearman_rho_vs_7day_mood": -0.3782315807823564,
+      "p_value": 0.017589055121775422
+    }
+  }
+}

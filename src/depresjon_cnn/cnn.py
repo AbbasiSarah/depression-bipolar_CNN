@@ -184,6 +184,13 @@ class ActivityCNN:
             GlobalAvgPool(), Dropout(self.dropout, rng), Dense(32, 1, rng),
         ]
 
+    def _fit_normalizer(self, X):
+        self.mu, self.sd = X.mean(), X.std() + 1e-8
+
+    def _normalize(self, X):
+        """(n, L) raw input -> (n, 1, L) standardised tensor."""
+        return ((X - self.mu) / self.sd)[:, None, :]
+
     def _forward(self, x, train):
         for layer in self.layers:
             x = layer.forward(x, train)
@@ -204,8 +211,8 @@ class ActivityCNN:
 
     def fit(self, X, y):
         X = np.asarray(X, dtype=np.float64)
-        self.mu, self.sd = X.mean(), X.std() + 1e-8
-        Xn = ((X - self.mu) / self.sd)[:, None, :]
+        self._fit_normalizer(X)
+        Xn = self._normalize(X)
         y = np.asarray(y, dtype=np.float64)
         if self.task == "regression":
             self.y_mu, self.y_sd = y.mean(), y.std() + 1e-8
@@ -234,7 +241,7 @@ class ActivityCNN:
         return self
 
     def decision_function(self, X, batch=256):
-        Xn = ((np.asarray(X, dtype=np.float64) - self.mu) / self.sd)[:, None, :]
+        Xn = self._normalize(np.asarray(X, dtype=np.float64))
         return np.concatenate([self._forward(Xn[i:i + batch], train=False)
                                for i in range(0, len(Xn), batch)])
 
@@ -246,3 +253,36 @@ class ActivityCNN:
         if self.task == "classification":
             return (out > 0).astype(int)
         return out * self.y_sd + self.y_mu
+
+
+class DiaryCNN(ActivityCNN):
+    """Multichannel 1-D CNN over a window of daily self-report questionnaires.
+
+    Input: (n, channels, days), e.g. 11 questionnaire items x 14 days.
+    Each channel is standardised separately. Architecture::
+
+        Conv1D(C -> 16, k=3) -> ReLU -> MaxPool(2)     14 -> 7
+        Conv1D(16 -> 16, k=3) -> ReLU
+        GlobalAveragePooling -> Dropout -> Dense(16 -> 1)
+    """
+
+    def __init__(self, in_channels, epochs=60, batch_size=32, lr=2e-3, dropout=0.3,
+                 seed=0, verbose=False):
+        super().__init__("classification", epochs, batch_size, lr, dropout, seed, verbose)
+        self.in_channels = in_channels
+
+    def _build(self):
+        rng = np.random.default_rng(self.seed)
+        self.rng = rng
+        self.layers = [
+            Conv1D(self.in_channels, 16, 3, rng), ReLU(), MaxPool1D(2),
+            Conv1D(16, 16, 3, rng), ReLU(),
+            GlobalAvgPool(), Dropout(self.dropout, rng), Dense(16, 1, rng),
+        ]
+
+    def _fit_normalizer(self, X):
+        self.mu = X.mean(axis=(0, 2), keepdims=True)
+        self.sd = X.std(axis=(0, 2), keepdims=True) + 1e-8
+
+    def _normalize(self, X):
+        return (X - self.mu) / self.sd
