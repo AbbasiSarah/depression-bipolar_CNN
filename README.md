@@ -99,7 +99,7 @@ from different starting points.
   (AUC 0.65–0.66), and it also works for a patient it has never seen.
 * **Forecasting 7 days ahead does not work with this data.** No model beats chance. The CNN's
   "forecasts" rise only once an episode has already started (see below), so it recognises
-  depression but cannot anticipate it. With only 3 patients and 4 depressive episodes (29
+  depression but cannot anticipate it. With only 3 patients and 5 depressive episodes (29
   "new-episode" windows), there are too few examples of what the run-up to an episode looks like.
   We also tried standardising each patient against their own baseline; it did not help.
 
