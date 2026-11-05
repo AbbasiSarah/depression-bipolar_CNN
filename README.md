@@ -8,7 +8,9 @@ This project has two parts:
 2. **Part 2 – Bip4cast bipolar patients:** a multichannel CNN that uses 14 days of a bipolar
    patient's **daily self-report questionnaire** to detect, and try to *forecast* 7 days ahead,
    depressive episodes. It also checks the self-reports against the clinician-rated
-   **YMRS** (mania) and **HDRS** (depression) scales. Both CNNs are written **from scratch in NumPy**: no deep-learning
+   **YMRS** (mania) and **HDRS** (depression) scales.
+
+Both CNNs are written **from scratch in NumPy**: no deep-learning
 framework is used. That way every algorithm in the pipeline is visible and explained,
 and its gradients are verified numerically.
 
