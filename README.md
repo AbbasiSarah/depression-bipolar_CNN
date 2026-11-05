@@ -1,5 +1,7 @@
 # Forecasting Depression in Bipolar Disorder Using a Convolutional Neural Network
 
+**Website and live demo:** https://abbasisarah.github.io/depression-bipolar_CNN/
+
 This project has two parts:
 
 1. **Part 1 – Depresjon (55 people):** a 1-D Convolutional Neural Network (CNN) that detects
