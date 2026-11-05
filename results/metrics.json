@@ -1,0 +1,112 @@
+{
+  "dataset": {
+    "participants": 55,
+    "days": 693,
+    "patients": 23,
+    "bipolar_patients": 8
+  },
+  "settings": {
+    "repeats": 5,
+    "epochs": 40,
+    "cv": "5-fold StratifiedGroupKFold by participant"
+  },
+  "detection": {
+    "CNN": {
+      "accuracy": 0.71,
+      "balanced_accuracy": 0.7039,
+      "f1": 0.6583,
+      "mcc": 0.4076,
+      "auc": 0.7713,
+      "subject_accuracy": 0.7309,
+      "recall_bipolar": 0.7315,
+      "recall_unipolar": 0.6273
+    },
+    "Decision Tree": {
+      "accuracy": 0.6214,
+      "balanced_accuracy": 0.6184,
+      "f1": 0.5711,
+      "mcc": 0.2349,
+      "auc": 0.6526,
+      "subject_accuracy": 0.6982,
+      "recall_bipolar": 0.6185,
+      "recall_unipolar": 0.5891
+    },
+    "Logistic Regression": {
+      "accuracy": 0.6759,
+      "balanced_accuracy": 0.6688,
+      "f1": 0.6183,
+      "mcc": 0.337,
+      "auc": 0.7118,
+      "subject_accuracy": 0.7127,
+      "recall_bipolar": 0.6241,
+      "recall_unipolar": 0.6251
+    },
+    "MLP": {
+      "accuracy": 0.6522,
+      "balanced_accuracy": 0.6342,
+      "f1": 0.5572,
+      "mcc": 0.2753,
+      "auc": 0.6722,
+      "subject_accuracy": 0.7309,
+      "recall_bipolar": 0.5167,
+      "recall_unipolar": 0.5246
+    },
+    "Naive Bayes": {
+      "accuracy": 0.697,
+      "balanced_accuracy": 0.6749,
+      "f1": 0.5983,
+      "mcc": 0.366,
+      "auc": 0.755,
+      "subject_accuracy": 0.68,
+      "recall_bipolar": 0.6148,
+      "recall_unipolar": 0.4918
+    },
+    "Random Forest": {
+      "accuracy": 0.6756,
+      "balanced_accuracy": 0.665,
+      "f1": 0.6079,
+      "mcc": 0.3316,
+      "auc": 0.7321,
+      "subject_accuracy": 0.7345,
+      "recall_bipolar": 0.6426,
+      "recall_unipolar": 0.5727
+    },
+    "SVM (SMO)": {
+      "accuracy": 0.662,
+      "balanced_accuracy": 0.6438,
+      "f1": 0.5684,
+      "mcc": 0.2954,
+      "auc": 0.6949,
+      "subject_accuracy": 0.7091,
+      "recall_bipolar": 0.5667,
+      "recall_unipolar": 0.5082
+    }
+  },
+  "early_detection_subject_accuracy": {
+    "1_days": 0.7054545454545454,
+    "2_days": 0.7345454545454546,
+    "3_days": 0.7454545454545454,
+    "4_days": 0.7309090909090908,
+    "5_days": 0.7345454545454546,
+    "6_days": 0.7345454545454546,
+    "7_days": 0.7636363636363637
+  },
+  "severity_mae_madrs_points": {
+    "CNN": {
+      "mae_mean": 4.359727741657095,
+      "mae_std": 0.3316773973936504
+    },
+    "Random Forest": {
+      "mae_mean": 4.168921104221425,
+      "mae_std": 0.08019872932926599
+    },
+    "Ridge": {
+      "mae_mean": 4.74902383965741,
+      "mae_std": 0.36156903193789103
+    },
+    "Mean (no model)": {
+      "mae_mean": 4.141552511980033,
+      "mae_std": 0.08223617730045009
+    }
+  }
+}
