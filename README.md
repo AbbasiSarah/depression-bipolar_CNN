@@ -1,6 +1,6 @@
 # Forecasting Depression in Bipolar Disorder Using a Convolutional Neural Network
 
-<p align="center"><a href="https://abbasisarah.github.io/assets/videos/demo-depression-bipolar_CNN.mp4"><img src="assets/demo.gif" width="300" alt="17-second project demo"></a><br><sub>17-second demo. Click for the video with sound.</sub></p>
+<p align="center"><a href="https://github.com/AbbasiSarah/depression-bipolar_CNN/blob/main/assets/demo.mp4"><img src="assets/demo.gif" width="300" alt="17-second project demo"></a><br><sub>17-second demo. Click for the video with sound.</sub></p>
 
 **Website and live demo:** https://abbasisarah.github.io/depression-bipolar_CNN/
 
